@@ -1,0 +1,4 @@
+1 qwerty@gmail.com ACTIVE
+2 detlas@gmail.com BANNED
+3 ytrewq@yhoo.com DELETED
+4 joke@mail.ru ACTIVE
