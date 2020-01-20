@@ -1,7 +1,7 @@
 package ua.epam.hw7_8.model;
 
 public class Account {
-    private String email;
+    private String account;
     private AccountStatus accountStatus;
     private Long id;
 
@@ -9,8 +9,8 @@ public class Account {
         this.id = id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     public void setAccountStatus(AccountStatus accountStatus) {
@@ -21,8 +21,8 @@ public class Account {
         return id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getAccount() {
+        return account;
     }
 
     public AccountStatus getAccountStatus() {
@@ -31,6 +31,6 @@ public class Account {
 
     @Override
     public String toString() {
-        return this.email == null ? "" : this.id + " " + this.email + " " + this.accountStatus;
+        return this.account == null ? "" : this.id + " " + this.account + " " + this.accountStatus;
     }
 }

@@ -3,6 +3,7 @@ package ua.epam.hw7_8.repository.io;
 import ua.epam.hw7_8.model.Developer;
 import ua.epam.hw7_8.model.Skill;
 import ua.epam.hw7_8.repository.DeveloperRepository;
+import ua.epam.hw7_8.util.JavaIOUtilLogic;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,17 +27,17 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
             JavaIOUtilLogic.read(arrayList, file);
             pw = new PrintWriter(file);
             if (arrayList.size() == 0) {
-                ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDevSkills());
+                ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDeveloperSkills());
                 Long skillId = skillArrayList.get(0).getId();
-                pw.println("1 " + data.getName() + " " + data.getDevAccount().getId() + " " + skillId);
+                pw.println("1 " + data.getName() + " " + data.getDeveloperAccount().getId() + " " + skillId);
             } else {
                 id = JavaIOUtilLogic.lastId(arrayList);
                 for (int i = 0; i < arrayList.size(); i++) {
                     pw.println(arrayList.get(i));
                 }
-                ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDevSkills());
+                ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDeveloperSkills());
                 Long skillId = skillArrayList.get(0).getId();
-                pw.println(++id + " " + data.getName() + " " + data.getDevAccount().getId() + " " + skillId);
+                pw.println(++id + " " + data.getName() + " " + data.getDeveloperAccount().getId() + " " + skillId);
             }
             pw.close();
         } catch (IOException e) {
@@ -61,7 +62,7 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
     public Developer getById(Long id) {
         File file = new File(PATH_NAME);
         ArrayList<String> arrayList = new ArrayList<String>();
-        Developer developer = null;
+        Developer developer = new Developer();
         try {
             JavaIOUtilLogic.read(arrayList, file);
         } catch (IOException e) {
@@ -143,8 +144,8 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
         Developer developer = new Developer();
         developer.setId(Long.parseLong(idDeveloper));
         developer.setName(nameStr);
-        developer.setDevSkills(skillRepository.getById(Long.parseLong(idSkill)));
-        developer.setDevAccount(accountRepository.getById(Long.parseLong(idAccount)));
+        developer.setDeveloperSkills(skillRepository.getById(Long.parseLong(idSkill)));
+        developer.setDeveloperAccount(accountRepository.getById(Long.parseLong(idAccount)));
         return developer;
     }
 

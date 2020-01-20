@@ -28,12 +28,14 @@ public class SkillController {
         skillService.edit(id, skill);
     }
 
-    public void edit(long id, Set<Skill> skill) {
+    public void edit(Set<Skill> skillWithId, Set<Skill> skill) {
         ArrayList<Skill> skills = new ArrayList<>(skill);
-        for (int i = 0; i < skills.size(); i++) {
-            skillService.edit(id, skills.get(i));
+        ArrayList<Skill> skillsWithId = new ArrayList<>(skillWithId);
+        if (skillsWithId.size() != 0) {
+            for (int i = 0; i < skills.size(); i++) {
+                skillService.edit(skillsWithId.get(i).getId(), skills.get(i));
+            }
         }
-
     }
 
     public void delete(long id) {

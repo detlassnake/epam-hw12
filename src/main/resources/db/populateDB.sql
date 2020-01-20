@@ -30,13 +30,7 @@ VALUES ('3', '1');
 INSERT INTO developers_skills(developer_id, skill_id)
 VALUES ('1', '2');
 
-UPDATE skills SET skill_name = 'Marketing' WHERE id = 4;
-DELETE FROM skills WHERE id = 7;
-
 SELECT * FROM skills;
 SELECT * FROM accounts;
 SELECT * FROM developers;
 SELECT * FROM developers_skills;
-
-
-

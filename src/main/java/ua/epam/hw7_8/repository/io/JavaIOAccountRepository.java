@@ -3,6 +3,8 @@ package ua.epam.hw7_8.repository.io;
 import ua.epam.hw7_8.model.Account;
 import ua.epam.hw7_8.model.AccountStatus;
 import ua.epam.hw7_8.repository.AccountRepository;
+import ua.epam.hw7_8.util.JavaIOUtilLogic;
+import ua.epam.hw7_8.util.UtilLogic;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,14 +25,14 @@ public class JavaIOAccountRepository implements AccountRepository {
             JavaIOUtilLogic.read(arrayList, file);
             pw = new PrintWriter(file);
             if (arrayList.size() == 0) {
-                pw.println("1 " + data.getEmail() + " " + data.getAccountStatus().toString());
+                pw.println("1 " + data.getAccount() + " " + data.getAccountStatus().toString());
                 data.setId(1L);
             } else {
                 id = JavaIOUtilLogic.lastId(arrayList);
                 for (int i = 0; i < arrayList.size(); i++) {
                     pw.println(arrayList.get(i));
                 }
-                pw.println(++id + " " + data.getEmail() + " " + data.getAccountStatus().toString());
+                pw.println(++id + " " + data.getAccount() + " " + data.getAccountStatus().toString());
                 data.setId(id);
             }
             pw.close();
@@ -56,7 +58,7 @@ public class JavaIOAccountRepository implements AccountRepository {
     public Account getById(Long id) {
         File file = new File(PATH_NAME);
         ArrayList<String> arrayList = new ArrayList<String>();
-        Account account = null;
+        Account account = new Account();
         try {
             JavaIOUtilLogic.read(arrayList, file);
         } catch (IOException e) {
@@ -96,7 +98,7 @@ public class JavaIOAccountRepository implements AccountRepository {
                     if (idFromFile != id) {
                         pw.println(arrayList.get(i));
                     } else {
-                        pw.println(id + " " + data.getEmail() + " " + data.getAccountStatus());
+                        pw.println(id + " " + data.getAccount() + " " + data.getAccountStatus());
                     }
                 }
                 pw.close();
@@ -135,8 +137,8 @@ public class JavaIOAccountRepository implements AccountRepository {
     private static Account createAccount(String idAccount, String accountStr, String AccountStatusStr) {
         Account account = new Account();
         account.setId(Long.parseLong(idAccount));
-        account.setEmail(accountStr);
-        account.setAccountStatus(accountStatusCheck(AccountStatusStr));
+        account.setAccount(accountStr);
+        account.setAccountStatus(UtilLogic.accountStatusCheck(AccountStatusStr));
         return account;
     }
 
@@ -146,15 +148,5 @@ public class JavaIOAccountRepository implements AccountRepository {
             Account account = createAccount(fileStr[0], fileStr[1], fileStr[2]);
             accountArrayList.add(account);
         }
-    }
-
-    private static AccountStatus accountStatusCheck(String AccountStatusStr) {
-        if (AccountStatus.ACTIVE.toString().equals(AccountStatusStr))
-            return AccountStatus.ACTIVE;
-        else if (AccountStatus.BANNED.toString().equals(AccountStatusStr))
-            return AccountStatus.BANNED;
-        else if (AccountStatus.DELETED.toString().equals(AccountStatusStr))
-            return AccountStatus.DELETED;
-        return null;
     }
 }

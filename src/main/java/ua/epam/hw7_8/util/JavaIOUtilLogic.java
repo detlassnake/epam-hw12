@@ -1,4 +1,4 @@
-package ua.epam.hw7_8.repository.io;
+package ua.epam.hw7_8.util;
 
 import java.io.File;
 import java.io.IOException;

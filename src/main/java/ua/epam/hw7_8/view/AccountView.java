@@ -21,7 +21,7 @@ public class AccountView {
             in.next();
         }
         input = in.nextLine();
-        account.setEmail(input);
+        account.setAccount(input);
         return account;
     }
 

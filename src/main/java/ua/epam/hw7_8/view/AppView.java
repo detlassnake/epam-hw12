@@ -28,9 +28,9 @@ public class AppView {
         switch (choice()) {
             case 1:         //create
                 developer.setName(developerView.inputDeveloper());
-                developer.setDevSkills(skillController.create(skillView.inputSkill()));
-                developer.setDevSkills(skillController.create(skillView.inputSkill()));
-                developer.setDevAccount(accountController.create(accountView.inputAccount()));
+                developer.setDeveloperSkills(skillController.create(skillView.inputSkill()));
+                developer.setDeveloperSkills(skillController.create(skillView.inputSkill()));
+                developer.setDeveloperAccount(accountController.create(accountView.inputAccount()));
                 developerController.create(developer);
                 break;
             case 2:         //read all
@@ -45,19 +45,23 @@ public class AppView {
             case 4:         //edit by id
                 System.out.println(INPUT_ID_TEXT);
                 long idToEdit = choice();
-                developer.setName(developerView.inputDeveloper());
-                developer.setDevSkills(skillController.create(skillView.inputSkill()));
-                developer.setDevSkills(skillController.create(skillView.inputSkill()));
-                developer.setDevAccount(accountView.inputAccount());
-                accountController.edit(idToEdit, developer.getDevAccount());
-                developerController.edit(idToEdit, developer);
-                skillController.edit(idToEdit,developer.getDevSkills());
+                if (developerController.readById(idToEdit).getName() != null) {
+                    developer.setName(developerView.inputDeveloper());
+                    developer.setDeveloperSkills(skillView.inputSkill());
+                    developer.setDeveloperSkills(skillView.inputSkill());
+                    developer.setDeveloperAccount(accountView.inputAccount());
+                    accountController.edit(idToEdit, developer.getDeveloperAccount());
+                    developerController.edit(idToEdit, developer);
+                    skillController.edit(developerController.readById(idToEdit).getDeveloperSkills(), developer.getDeveloperSkills());
+                }
                 break;
             case 5:         //delete by id
                 System.out.println(INPUT_ID_TEXT);
                 long idToDelete = choice();
+                if (developerController.readById(idToDelete).getName() != null) {
                 developerController.delete(idToDelete);
                 accountController.delete(idToDelete);
+                }
                 break;
             default:
                 System.out.println(NO_SUCH_NUMBER_TEXT);

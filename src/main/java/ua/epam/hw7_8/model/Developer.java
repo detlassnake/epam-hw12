@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Developer {
-    private Set<Skill> devSkills = new HashSet<Skill>();
-    private Account devAccount;
+    private Set<Skill> developerSkills = new HashSet<Skill>();
+    private Account developerAccount;
     private String name;
     private Long id;
 
@@ -13,12 +13,12 @@ public class Developer {
         this.id = id;
     }
 
-    public void setDevSkills(Skill devSkills) {
-        this.devSkills.add(devSkills);
+    public void setDeveloperSkills(Skill developerSkills) {
+        this.developerSkills.add(developerSkills);
     }
 
-    public void setDevAccount(Account devAccount) {
-        this.devAccount = devAccount;
+    public void setDeveloperAccount(Account developerAccount) {
+        this.developerAccount = developerAccount;
     }
 
     public void setName(String name) {
@@ -29,12 +29,12 @@ public class Developer {
         return id;
     }
 
-    public Set<Skill> getDevSkills() {
-        return devSkills;
+    public Set<Skill> getDeveloperSkills() {
+        return developerSkills;
     }
 
-    public Account getDevAccount() {
-        return devAccount;
+    public Account getDeveloperAccount() {
+        return developerAccount;
     }
 
     public String getName() {
@@ -43,7 +43,7 @@ public class Developer {
 
     @Override
     public String toString() {
-        return this.name == null ? "" : this.id + " " + this.name + " " + this.devAccount.getEmail()
-                + " " + this.devAccount.getAccountStatus() + " " + this.devSkills.toString() ;
+        return this.name == null ? "" : this.id + " " + this.name + " " + this.developerAccount.getAccount()
+                + " " + this.developerAccount.getAccountStatus() + " " + this.developerSkills.toString() ;
     }
 }

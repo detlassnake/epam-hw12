@@ -1,9 +1,12 @@
 package ua.epam.hw7_8.repository.jdbc;
 
-import ua.epam.hw7_8.model.Account;
 import ua.epam.hw7_8.model.Developer;
 import ua.epam.hw7_8.model.Skill;
 import ua.epam.hw7_8.repository.DeveloperRepository;
+import ua.epam.hw7_8.repository.objectMapper.ObjectMapper;
+import ua.epam.hw7_8.util.ConnectionPoolUtil;
+import ua.epam.hw7_8.util.JdbcUtilLogic;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,14 +14,11 @@ import java.util.Comparator;
 
 public class JdbcDeveloperRepository implements DeveloperRepository {
     private final String ID_NOT_FOUND_TEXT = "Id not found";
-    private static final String DATABASE_URL = "jdbc:mysql://localhost/epam";
-    private static final String USER = "root";
-    private static final String PASSWORD = "hugo449079";
 
     public Developer save(Developer developer) {
         String sql1 = "INSERT INTO developers(developer_name, account_id) VALUES (?, ?);";
         String sql2 = "INSERT INTO developers_skills(developer_id, skill_id) VALUES (?, ?);";
-        String sql3 = "SELECT * FROM developers WHERE developer_name = '" + developer.getName() + "';";
+        String sql3 = "SELECT * FROM developers WHERE developer_name = ?;";
         return developerWriteToDB(sql1, sql2, sql3, developer);
     }
 
@@ -59,118 +59,51 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
     }
 
     private Developer developerWriteToDB(String sql1, String sql2, String sql3, Developer developer) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
-            preparedStatement = connection.prepareStatement(sql1);
-            preparedStatement.setString(1, developer.getName());
-            preparedStatement.setLong(2, developer.getDevAccount().getId());
-            preparedStatement.executeUpdate();
-
-            ResultSet resultSet = preparedStatement.executeQuery(sql3);
-            while (resultSet.next()) {
-                long id = resultSet.getInt("id");
-                developer.setId(id);
-            }
-
-            ArrayList<Skill> developerSkills = new ArrayList<>(developer.getDevSkills());
-            for (int i = 0; i < developerSkills.size(); i++) {
-                preparedStatement = connection.prepareStatement(sql2);
-                preparedStatement.setLong(1, developer.getId());
-                preparedStatement.setLong(2, developerSkills.get(i).getId());
+        try (Connection connection = ConnectionPoolUtil.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql1)) {
+                preparedStatement.setString(1, developer.getName());
+                preparedStatement.setLong(2, developer.getDeveloperAccount().getId());
                 preparedStatement.executeUpdate();
+            }
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql3)) {
+                preparedStatement.setString(1, developer.getName());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                ObjectMapper.mapToDeveloper(resultSet, developer);
+            }
+            ArrayList<Skill> developerSkills = new ArrayList<>(developer.getDeveloperSkills());
+            for (int i = 0; i < developerSkills.size(); i++) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(sql2)) {
+                    preparedStatement.setLong(1, developer.getId());
+                    preparedStatement.setLong(2, developerSkills.get(i).getId());
+                    preparedStatement.executeUpdate();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
         return developer;
     }
 
-    private void developerWriteToDB(String sql1, Developer developer, long id) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
-            preparedStatement = connection.prepareStatement(sql1);
+    private void developerWriteToDB(String sql, Developer developer, long id) {
+        try (Connection connection = ConnectionPoolUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, developer.getName());
             preparedStatement.setLong(2, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
     private ArrayList<Developer> developerReadFromDB(String sql) {
-        Connection connection = null;
-        Statement statement = null;
-        ArrayList<Developer> developerArrayList = new ArrayList<>();
-        try {
-            connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
-            statement = connection.createStatement();
+        ArrayList<Developer> developerArrayList = null;
+        try (Connection connection = ConnectionPoolUtil.getConnection();
+             Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                long accountId = resultSet.getInt("a.id");
-                long skillId = resultSet.getInt("s.id");
-                long developerId = resultSet.getInt("d.id");
-                String skill_name = resultSet.getString("skill_name");
-                String account_name = resultSet.getString("account_name");
-                String account_status = resultSet.getString("account_status");
-                String developer_name = resultSet.getString("developer_name");
-
-                Developer developer = new Developer();
-                Account account = new Account();
-                Skill skill = new Skill();
-
-                skill.setId(skillId);
-                skill.setSkill(skill_name);
-                account.setId(accountId);
-                account.setAccountStatus(JdbcUtilLogic.accountStatusCheck(account_status));
-                account.setEmail(account_name);
-                developer.setId(developerId);
-                developer.setName(developer_name);
-                developer.setDevAccount(account);
-                developer.setDevSkills(skill);
-
-                developerArrayList.add(developer);
-            }
+            developerArrayList = ObjectMapper.mapToDeveloper(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
-
         duplicateCleaner(developerArrayList);
         return developerArrayList;
     }
@@ -186,12 +119,12 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
         for (int i = 0; i < developerArrayList.size(); i++) {
             for (int j = i + 1; j < developerArrayList.size(); j++) {
                 if (developerArrayList.get(i).getId().equals(developerArrayList.get(j).getId())) {
-                    ArrayList<Skill> arrayList = new ArrayList<>(developerArrayList.get(j).getDevSkills());
+                    ArrayList<Skill> arrayList = new ArrayList<>(developerArrayList.get(j).getDeveloperSkills());
                     Skill skill = new Skill();
                     for (int k = 0; k < arrayList.size(); k++) {
                         skill.setId(arrayList.get(k).getId());
                         skill.setSkill(arrayList.get(k).getSkill());
-                        developerArrayList.get(i).setDevSkills(skill);
+                        developerArrayList.get(i).setDeveloperSkills(skill);
                     }
                     developerArrayList.remove(j);
                 }

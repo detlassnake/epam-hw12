@@ -2,6 +2,7 @@ package ua.epam.hw7_8.repository.io;
 
 import ua.epam.hw7_8.model.Skill;
 import ua.epam.hw7_8.repository.SkillRepository;
+import ua.epam.hw7_8.util.JavaIOUtilLogic;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class JavaIOSkillRepository implements SkillRepository {
     public Skill getById(Long id) {
         File file = new File(PATH_NAME);
         ArrayList<String> arrayList = new ArrayList<String>();
-        Skill skill = null;
+        Skill skill = new Skill();
         try {
             JavaIOUtilLogic.read(arrayList, file);
         } catch (IOException e) {
