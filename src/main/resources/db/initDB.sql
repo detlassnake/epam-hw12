@@ -1,8 +1,3 @@
-DROP TABLE IF EXISTS developers_skills;
-DROP TABLE IF EXISTS developers;
-DROP TABLE IF EXISTS skills;
-DROP TABLE IF EXISTS accounts;
-
 CREATE TABLE IF NOT EXISTS accounts (
     id             INT PRIMARY KEY AUTO_INCREMENT,
     account_name   VARCHAR(255) NOT NULL,

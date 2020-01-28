@@ -29,8 +29,3 @@ INSERT INTO developers_skills(developer_id, skill_id)
 VALUES ('3', '1');
 INSERT INTO developers_skills(developer_id, skill_id)
 VALUES ('1', '2');
-
-SELECT * FROM skills;
-SELECT * FROM accounts;
-SELECT * FROM developers;
-SELECT * FROM developers_skills;
