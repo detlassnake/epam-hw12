@@ -16,31 +16,18 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
     private final String ID_NOT_FOUND_TEXT = "Id not found";
 
     public Developer save(Developer developer) {
-        String sql1 = "INSERT INTO developers(developer_name, account_id) VALUES (?, ?);";
-        String sql2 = "INSERT INTO developers_skills(developer_id, skill_id) VALUES (?, ?);";
-        String sql3 = "SELECT * FROM developers WHERE developer_name = ?;";
-        return developerWriteToDB(sql1, sql2, sql3, developer);
+        return developerWriteToDB(JdbcQueryStorage.sqlCreateDeveloper1,
+                JdbcQueryStorage.sqlCreateDeveloper2, JdbcQueryStorage.sqlCreateDeveloper3, developer);
     }
 
     public ArrayList<Developer> getAll() {
-        String sql = "SELECT d.id, d.developer_name, a.id, a.account_name, a.account_status, s.id, s.skill_name\n" +
-                "FROM developers d\n" +
-                "         JOIN developers_skills ds ON d.id = ds.developer_id\n" +
-                "         JOIN skills s ON ds.skill_id = s.id\n" +
-                "         JOIN accounts a ON d.account_id = a.id;";
-        return developerReadFromDB(sql);
+        return developerReadFromDB(JdbcQueryStorage.sqlReadDeveloper);
     }
 
     public Developer getById(Long id) {
-        String sql = "SELECT d.id, d.developer_name, a.id, a.account_name, a.account_status, s.id, s.skill_name\n" +
-                "FROM developers d\n" +
-                "         JOIN developers_skills ds ON d.id = ds.developer_id\n" +
-                "         JOIN skills s ON ds.skill_id = s.id\n" +
-                "         JOIN accounts a ON d.account_id = a.id \n" +
-                "WHERE d.id = " + id + ";";
         Developer developer = new Developer();
         try {
-            developer = developerReadFromDB(sql).get(0);
+            developer = developerReadFromDB(JdbcQueryStorage.sqlReadByIdDeveloper + id + ";").get(0);
         } catch (IndexOutOfBoundsException e) {
             System.out.println(ID_NOT_FOUND_TEXT);
         }
@@ -48,14 +35,11 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
     }
 
     public void update(Long id, Developer developer) {
-        String sql = "UPDATE developers SET developer_name = ?  WHERE id = ?;";
-        developerWriteToDB(sql, developer, id);
+        developerWriteToDB(JdbcQueryStorage.sqlUpdateDeveloper, developer, id);
     }
 
     public void deleteById(Long id) {
-        String sql2 = "DELETE FROM developers WHERE id = ?;";
-        String sql1 = "DELETE FROM developers_skills WHERE developer_id = ?;";
-        JdbcUtilLogic.writeToDB(sql1, sql2, id);
+        JdbcUtilLogic.writeToDB(JdbcQueryStorage.sqlDeleteDeveloper1, JdbcQueryStorage.sqlDeleteDeveloper2, id);
     }
 
     private Developer developerWriteToDB(String sql1, String sql2, String sql3, Developer developer) {

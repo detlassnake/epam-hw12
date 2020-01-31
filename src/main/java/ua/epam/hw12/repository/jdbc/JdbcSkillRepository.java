@@ -13,21 +13,17 @@ public class JdbcSkillRepository implements SkillRepository {
     private final String ID_NOT_FOUND_TEXT = "Id not found";
 
     public Skill save(Skill skill) {
-        String sql1 = "INSERT INTO skills(skill_name) VALUES (?);";
-        String sql2 = "SELECT * FROM skills WHERE skill_name = ?;";
-        return skillWriteToDB(sql1, sql2, skill);
+        return skillWriteToDB(JdbcQueryStorage.sqlCreateSkill1, JdbcQueryStorage.sqlCreateSkill2, skill);
     }
 
     public ArrayList<Skill> getAll() {
-        String sql = "SELECT * FROM skills;";
-        return skillReadFromDB(sql);
+        return skillReadFromDB(JdbcQueryStorage.sqlReadSkill);
     }
 
     public Skill getById(Long id) {
-        String sql = "SELECT * FROM skills WHERE id = " + id + ";";
         Skill skill = new Skill();
         try {
-            skill = skillReadFromDB(sql).get(0);
+            skill = skillReadFromDB(JdbcQueryStorage.sqlReadByIdSkill + id + ";").get(0);
         } catch (IndexOutOfBoundsException e) {
             System.out.println(ID_NOT_FOUND_TEXT);
         }
@@ -35,13 +31,11 @@ public class JdbcSkillRepository implements SkillRepository {
     }
 
     public void update(Long id, Skill skill) {
-        String sql = "UPDATE skills SET skill_name = ? WHERE id = ?;";
-        skillWriteToDB(sql, skill, id);
+        skillWriteToDB(JdbcQueryStorage.sqlUpdateSkill, skill, id);
     }
 
     public void deleteById(Long id) {
-        String sql = "DELETE FROM skills WHERE id = ?;";
-        JdbcUtilLogic.writeToDB(sql, id);
+        JdbcUtilLogic.writeToDB(JdbcQueryStorage.sqlDeleteSkill, id);
     }
 
     private Skill skillWriteToDB(String sql1, String sql2, Skill skill) {

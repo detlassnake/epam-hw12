@@ -13,21 +13,17 @@ public class JdbcAccountRepository implements AccountRepository {
     private final String ID_NOT_FOUND_TEXT = "Id not found";
 
     public Account save(Account account) {
-        String sql1 = "INSERT INTO accounts (account_name, account_status) VALUES (?, ?);";
-        String sql2 = "SELECT * FROM accounts WHERE account_name = ?;";
-        return accountWriteToDB(sql1, sql2, account);
+        return accountWriteToDB(JdbcQueryStorage.sqlCreateAccount1, JdbcQueryStorage.sqlCreateAccount2, account);
     }
 
     public ArrayList<Account> getAll() {
-        String sql = "SELECT * from accounts;";
-        return accountReadFromDB(sql);
+        return accountReadFromDB(JdbcQueryStorage.sqlReadAccount);
     }
 
     public Account getById(Long id) {
-        String sql = "SELECT * from accounts WHERE id = " + id + ";";
         Account account = new Account();
         try {
-            account = accountReadFromDB(sql).get(0);
+            account = accountReadFromDB(JdbcQueryStorage.sqlReadByIdAccount + id + ";").get(0);
         } catch (IndexOutOfBoundsException e) {
             System.out.println(ID_NOT_FOUND_TEXT);
         }
@@ -35,13 +31,11 @@ public class JdbcAccountRepository implements AccountRepository {
     }
 
     public void update(Long id, Account account) {
-        String sql = "UPDATE accounts SET account_name = ?, account_status = ? WHERE id = ?;";
-        accountWriteToDB(sql, account, id);
+        accountWriteToDB(JdbcQueryStorage.sqlUpdateAccount, account, id);
     }
 
     public void deleteById(Long id) {
-        String sql = "DELETE FROM accounts WHERE id = ?;";
-        JdbcUtilLogic.writeToDB(sql, id);
+        JdbcUtilLogic.writeToDB(JdbcQueryStorage.sqlDeleteAccount, id);
     }
 
     private Account accountWriteToDB(String sql1, String sql2, Account account) {
