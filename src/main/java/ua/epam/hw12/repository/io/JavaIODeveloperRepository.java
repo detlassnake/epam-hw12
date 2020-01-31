@@ -27,7 +27,7 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
             JavaIOUtilLogic.read(arrayList, file);
             pw = new PrintWriter(file);
             if (arrayList.size() == 0) {
-                ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDeveloperSkills());
+                ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDeveloperSkillsSet());
                 Long skillId = skillArrayList.get(0).getId();
                 pw.println("1 " + data.getName() + " " + data.getDeveloperAccount().getId() + " " + skillId);
             } else {
@@ -35,7 +35,7 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
                 for (int i = 0; i < arrayList.size(); i++) {
                     pw.println(arrayList.get(i));
                 }
-                ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDeveloperSkills());
+                ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDeveloperSkillsSet());
                 Long skillId = skillArrayList.get(0).getId();
                 pw.println(++id + " " + data.getName() + " " + data.getDeveloperAccount().getId() + " " + skillId);
             }

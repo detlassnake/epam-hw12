@@ -70,7 +70,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 ObjectMapper.mapToDeveloper(resultSet, developer);
             }
-            ArrayList<Skill> developerSkills = new ArrayList<>(developer.getDeveloperSkills());
+            ArrayList<Skill> developerSkills = new ArrayList<>(developer.getDeveloperSkillsSet());
             for (int i = 0; i < developerSkills.size(); i++) {
                 try (PreparedStatement preparedStatement = connection.prepareStatement(sql2)) {
                     preparedStatement.setLong(1, developer.getId());
@@ -119,7 +119,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
         for (int i = 0; i < developerArrayList.size(); i++) {
             for (int j = i + 1; j < developerArrayList.size(); j++) {
                 if (developerArrayList.get(i).getId().equals(developerArrayList.get(j).getId())) {
-                    ArrayList<Skill> arrayList = new ArrayList<>(developerArrayList.get(j).getDeveloperSkills());
+                    ArrayList<Skill> arrayList = new ArrayList<>(developerArrayList.get(j).getDeveloperSkillsSet());
                     Skill skill = new Skill();
                     for (int k = 0; k < arrayList.size(); k++) {
                         skill.setId(arrayList.get(k).getId());

@@ -52,7 +52,7 @@ public class AppView {
                     developer.setDeveloperAccount(accountView.inputAccount());
                     accountController.edit(idToEdit, developer.getDeveloperAccount());
                     developerController.edit(idToEdit, developer);
-                    skillController.edit(developerController.readById(idToEdit).getDeveloperSkills(), developer.getDeveloperSkills());
+                    skillController.edit(developerController.readById(idToEdit).getDeveloperSkillsSet(), developer.getDeveloperSkillsSet());
                 }
                 break;
             case 5:         //delete by id

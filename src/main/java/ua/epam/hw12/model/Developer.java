@@ -17,6 +17,10 @@ public class Developer {
         this.developerSkills.add(developerSkills);
     }
 
+    public void setDeveloperSkillsSet(Set<Skill> developerSkillsSet) {
+        this.developerSkills = developerSkillsSet;
+    }
+
     public void setDeveloperAccount(Account developerAccount) {
         this.developerAccount = developerAccount;
     }
@@ -29,7 +33,7 @@ public class Developer {
         return id;
     }
 
-    public Set<Skill> getDeveloperSkills() {
+    public Set<Skill> getDeveloperSkillsSet() {
         return developerSkills;
     }
 

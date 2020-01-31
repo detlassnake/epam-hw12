@@ -25,7 +25,7 @@ public class SkillController {
     }
 
     public void edit(long id, Skill skill) {
-        skillService.edit(id, skill);
+        skillService.update(id, skill);
     }
 
     public void edit(Set<Skill> skillWithId, Set<Skill> skill) {
@@ -33,7 +33,7 @@ public class SkillController {
         ArrayList<Skill> skillsWithId = new ArrayList<>(skillWithId);
         if (skillsWithId.size() != 0) {
             for (int i = 0; i < skills.size(); i++) {
-                skillService.edit(skillsWithId.get(i).getId(), skills.get(i));
+                skillService.update(skillsWithId.get(i).getId(), skills.get(i));
             }
         }
     }

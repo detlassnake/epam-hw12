@@ -31,7 +31,7 @@ public class DeveloperService {
         return developerRepository.getById(id);
     }
 
-    public void edit(long id, Developer developer) {
+    public void update(long id, Developer developer) {
         logger.debug("Developer service->Edit by id");
         developerRepository.update(id, developer);
     }

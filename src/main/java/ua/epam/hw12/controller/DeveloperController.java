@@ -25,7 +25,7 @@ public class DeveloperController {
     }
 
     public void edit(long id, Developer developer) {
-        developerService.edit(id, developer);
+        developerService.update(id, developer);
     }
 
     public void delete(long id) {

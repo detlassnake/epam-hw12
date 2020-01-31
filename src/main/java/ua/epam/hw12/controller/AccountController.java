@@ -25,7 +25,7 @@ public class AccountController {
     }
 
     public void edit(long id, Account account) {
-        accountService.editById(id, account);
+        accountService.update(id, account);
     }
 
     public void delete(long id) {

@@ -7,6 +7,8 @@ import ua.epam.hw12.repository.SkillRepository;
 import ua.epam.hw12.repository.jdbc.JdbcSkillRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SkillService {
     public static final Logger logger = LoggerFactory.getLogger(AccountService.class);
@@ -21,6 +23,18 @@ public class SkillService {
         return skillRepository.save(skill);
     }
 
+    public Set<Skill> create(Set<Skill> skillSet) {
+        logger.debug("Skill service->Create");
+        ArrayList<Skill> skillArrayList = new ArrayList<>(skillSet);
+        Set<Skill> skillSetWithId = new HashSet<>();
+        if (skillArrayList.size() != 0) {
+            for (int i = 0; i < skillArrayList.size(); i++) {
+                skillSetWithId.add(skillRepository.save(skillArrayList.get(i)));
+            }
+        }
+        return skillSetWithId;
+    }
+
     public ArrayList<Skill> read() {
         logger.debug("Skill service->Read");
         return skillRepository.getAll();
@@ -31,9 +45,20 @@ public class SkillService {
         return skillRepository.getById(id);
     }
 
-    public void edit(long id, Skill skill) {
+    public void update(long id, Skill skill) {
         logger.debug("Skill service->Edit by id");
         skillRepository.update(id, skill);
+    }
+
+    public void update(Set<Skill> skillSetWithId, Set<Skill> skillSet) {
+        logger.debug("Skill service->Edit by id");
+        ArrayList<Skill> skillArrayListWithId = new ArrayList<>(skillSetWithId);
+        ArrayList<Skill> skillArrayList = new ArrayList<>(skillSet);
+        if (skillArrayListWithId.size() != 0) {
+            for (int i = 0; i < skillArrayList.size(); i++) {
+                skillRepository.update(skillArrayListWithId.get(i).getId(), skillArrayList.get(i));
+            }
+        }
     }
 
     public void delete(long id) {

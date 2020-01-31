@@ -31,7 +31,7 @@ public class AccountService {
         return accountRepository.getById(id);
     }
 
-    public void editById(long id, Account account) {
+    public void update(long id, Account account) {
         logger.debug("Account service->Edit by id");
         accountRepository.update(id, account);
     }
